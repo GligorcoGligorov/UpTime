@@ -86,7 +86,7 @@ export default {
     methods: {
     
         getStatusCode: function() {
-            fetch(`http://localhost:3000/checkSite?url=${this.url}`)
+            fetch(`https://www.${this.url}`)
                 .then(response => response.json())
                 .then(data => {
                     this.statusCode = data.status;
