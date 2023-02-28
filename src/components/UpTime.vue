@@ -87,7 +87,7 @@ export default {
     
         getStatusCode: function() {
             let base_url = "http://localhost:3000";
-            // base_url = "";
+            base_url = "";
             fetch(`${base_url}/api/getData?url=https://www.${this.url}`)
                 .then(response => response.json())
                 .then(data => {
