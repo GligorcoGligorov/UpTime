@@ -86,7 +86,7 @@ export default {
     methods: {
     
         getStatusCode: function() {
-            fetch(`https://www.${this.url}`)
+            fetch(`/api/getData`)
                 .then(response => response.json())
                 .then(data => {
                     this.statusCode = data.status;
@@ -106,10 +106,6 @@ export default {
 
         }       
     },
-    async mounted() {
-        const response = await this.$axios.get('/api/getData')
-        console.log(response.data)
-    }
 }
 
 
