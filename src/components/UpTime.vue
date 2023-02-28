@@ -106,8 +106,10 @@ export default {
 
         }       
     },
-   
-    
+    async mounted() {
+        const response = await this.$axios.get('/api/getData')
+        console.log(response.data)
+    }
 }
 
 
