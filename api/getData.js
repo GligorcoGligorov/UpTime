@@ -3,9 +3,10 @@ export default async (req, res) => {
 
     const response =
         await fetch(url)
-            .then(response => {
-                if (response.status === 200 && response.data.length > 0) {
-                    res.send({ status: response.status });
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 200 && data.data.length > 0) {
+                    res.send({ status: data.status });
                 } else {
                     res.send({ status: 'Bad Request' });
                 }
