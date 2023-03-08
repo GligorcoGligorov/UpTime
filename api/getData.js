@@ -3,9 +3,11 @@ export default async (req, res) => {
 
     const response =
         await fetch(url)
-            .then(response => {
+            .then(async response => {
                 if (response.status === 200) {
-                    res.send({ status: response.status });
+                    const html = await response.text();
+                    res.send({ status: response.status, html });
+                   
                     
                 } else {
                     res.send({ status: 'Bad Request' });
