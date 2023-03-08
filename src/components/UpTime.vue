@@ -141,12 +141,6 @@ export default {
         
         checkHtml: function(htmlString,att,value) {
 
-            console.log("drama")
-            console.log(htmlString)
-            console.log(att)
-            console.log(value)
-
-
             if(value === '' || att === ''){
                 return
             }
@@ -155,19 +149,12 @@ export default {
             const doc = parser.parseFromString(htmlString, 'text/html');
             const hrefs = doc.querySelectorAll('['+att +']');
             
-            console.log("epic")
-            console.log(doc)
-            console.log(hrefs)
-
-
-            
             this.exist = false;
            
             
             for(let h of hrefs){
                 console.log(h)
                 if(h[att].includes(value)){
-                    console.log("asd")
                     this.exist = true;
                     return 1;
                 }
@@ -187,10 +174,8 @@ export default {
             // https://jsonplaceholder.typicode.com/todos/1
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlString, 'text/html');
-            // // const hrefs = doc.querySelectorAll('['+att +']');
             const doc2 = doc.body.textContent;
             const jsonObject = JSON.parse(doc2);
-            // console.log(jsonObject)
             this.exist = false;
             for (let [key,value] of Object.entries(jsonObject)) {
                 if(key == att && value == value2){
