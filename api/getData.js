@@ -6,6 +6,7 @@ export default async (req, res) => {
             .then(response => {
                 if (response.status === 200) {
                     res.send({ status: response.status });
+                    
                 } else {
                     res.send({ status: 'Bad Request' });
                 }

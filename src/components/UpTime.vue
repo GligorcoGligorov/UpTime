@@ -36,11 +36,11 @@
 
     
     
-    <div class="main px-3 mt-5">
+    <div class="main px-3 mt-1 mt-sm-5">
         <div>
             <h3 class="text-xl fs-1 textColor">Insert Url to check website</h3>
         </div>
-        <div class="div1 p-3">
+        <div class="div1 p-1 p-sm-3">
             <div class="input-group">
                 <span class="input-group-text moreHeight" id="basic-addon3">example.com</span>
                 <input type="text" v-model="this.url" autofocus class="form-control moreHeight" id="basic-url" aria-describedby="basic-addon3">
@@ -51,12 +51,36 @@
             </div>
         </div>
         
-        <div :class="statusCode == 200 ? 'green' : (statusCode ? 'red' : 'text-white')" class="m-2">
+        <div :class="statusCode == 200 ? 'green' : (statusCode ? 'red' : 'text-white')" class="m-1 m-sm-2">
             <span class="text-xl fs-3">Status Code: {{ statusCode != 200 && statusCode ? '400' : '' }} {{ statusCode }} {{ statusCode == 200 ? 'OK' : '' }} </span>
         </div>
         <div class="m-2">
             <span class="text-xl fs-5 text-white">{{ this.lastUrl }}</span>
         </div>
+
+        <div v-if="showInputs" class="m-3">
+            <form >
+                <div class="row">
+                    <div class="col">
+                    <input type="text" v-model="att" class="form-control" placeholder="Insert Attribute" required>
+                    </div>
+                    <div class="col">
+                    <input type="text" v-model="value" class="form-control" placeholder="Value" required>
+                    </div>
+                </div>
+            </form>
+
+            <div class="my-1 my-sm-3 py-2 py-sm-1 d-flex gap-3">
+                <button type="button" class="btn btn-primary btn-lg btn-block w-100 btnmargin" @click="checkHtml(htmlString,att,value)">HTML</button>
+                <button type="button" class="btn btn-primary btn-lg btn-block w-100 btnmargin" @click="checkApi(htmlString,att,value)">API</button>
+            </div>
+
+
+            <div :class="exist ? 'green' : (!exist && exist != null ? 'red' : 'text-white')" class="m-1 m-sm-2">
+            <span class="text-xl fs-3">Exist: {{ exist != null && exist ? 'True' : '' }} {{ exist != null && !exist ? 'False' : '' }}  </span>
+        </div>
+        </div>
+
     </div>
 
     <footer class="fixed-bottom text-white-50 bgColor">
@@ -79,7 +103,12 @@ export default {
         return {
             url: '',
             statusCode: null,
-            lastUrl : ''
+            lastUrl : '',
+            showInputs: false,
+            att: '',
+            htmlString: '',
+            value: '',
+            exist: null
         
         }
     },
@@ -87,15 +116,17 @@ export default {
     
         getStatusCode: function() {
             let base_url = "http://localhost:3000";
-            base_url = "";
+            // base_url = "";
             fetch(`${base_url}/api/getData?url=${this.url}`)
                 .then(response => response.json())
                 .then(data => {
                     this.statusCode = data.status;
-                    console.log(data);
+                    if(this.statusCode === 200){
+                        this.showInputs = true;
+                    }
                     this.lastUrl = this.url;
                     this.url = '';
-
+                    this.htmlString = data.html;
                 })
                 .catch(error => {
                     console.log(error);
@@ -106,7 +137,60 @@ export default {
                     }
                 });
 
-        }       
+        },
+        
+        checkHtml: function(htmlString,att,value) {
+
+            if(value === '' || att === ''){
+                return
+            }
+
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlString, 'text/html');
+            const hrefs = doc.querySelectorAll('['+att +']');
+            
+            this.exist = false;
+           
+            
+            for(let h of hrefs){
+                console.log(h)
+                if(h[att].includes(value)){
+                    console.log("asd")
+                    this.exist = true;
+                    return 1;
+                }
+            }
+
+            return 0;
+            
+        },
+        
+        checkApi: function(htmlString,att,value2) {
+
+            if(value2 === '' || att === ''){
+                return
+            }
+
+            //https://dog.ceo/api/breeds/image/random
+            // https://jsonplaceholder.typicode.com/todos/1
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlString, 'text/html');
+            // // const hrefs = doc.querySelectorAll('['+att +']');
+            const doc2 = doc.body.textContent;
+            const jsonObject = JSON.parse(doc2);
+            // console.log(jsonObject)
+            this.exist = false;
+            for (let [key,value] of Object.entries(jsonObject)) {
+                if(key == att && value == value2){
+                    console.log(jsonObject[att] == value2)
+                    this.exist = true;
+
+                }
+
+              
+            }
+
+        }  
     },
 }
 
@@ -174,6 +258,9 @@ body {
     justify-content: center;
     align-items: center;
 }
+.w-50{
+    width: 50%;
+}
 
 @media (max-width: 576px) {
     .btnWidth {
@@ -182,15 +269,21 @@ body {
     }
     .rounded-sm {
         border-radius: 0.25rem !important;
+
     }
     .moreHeight {
         height: 70px !important;
     }
     .btn{
-        width: 50%;
+        width: 50% !important;
         height: 20% !important;
-        display: block;
-        margin: 10% auto !important;
+        display: inline-block;
+        margin: 4% auto !important;
+    }
+    .btnmargin{
+        margin: 3% auto !important;
+
+
     }
 }
 
