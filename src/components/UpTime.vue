@@ -141,6 +141,12 @@ export default {
         
         checkHtml: function(htmlString,att,value) {
 
+            console.log("drama")
+            console.log(htmlString)
+            console.log(att)
+            console.log(value)
+
+
             if(value === '' || att === ''){
                 return
             }
@@ -148,6 +154,12 @@ export default {
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlString, 'text/html');
             const hrefs = doc.querySelectorAll('['+att +']');
+            
+            console.log("epic")
+            console.log(doc)
+            console.log(hrefs)
+
+
             
             this.exist = false;
            
