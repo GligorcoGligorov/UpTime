@@ -61,6 +61,9 @@
         <div v-if="showInputs" class="m-3">
             <form >
                 <div class="row">
+                    <div class="col" v-if="isHtml">
+                    <input type="text" v-model="tag" class="form-control" placeholder="Insert Tag" required>
+                    </div>
                     <div class="col">
                     <input type="text" v-model="att" class="form-control" placeholder="Insert Attribute" required>
                     </div>
@@ -71,7 +74,7 @@
             </form>
 
             <div class="my-1 my-sm-3 py-2 py-sm-1 d-flex gap-3">
-                <button type="button" class="btn btn-primary btn-lg btn-block w-100 btnmargin" @click="checkHtml(htmlString,att,value)">HTML</button>
+                <button type="button" class="btn btn-primary btn-lg btn-block w-100 btnmargin" @click="checkHtml(htmlString,tag,att,value)">HTML</button>
                 <button type="button" class="btn btn-primary btn-lg btn-block w-100 btnmargin" @click="checkApi(htmlString,att,value)">API</button>
             </div>
 
@@ -108,7 +111,9 @@ export default {
             att: '',
             htmlString: '',
             value: '',
-            exist: null
+            exist: null,
+            isHtml: true,
+            tag: ''
         
         }
     },
@@ -139,9 +144,11 @@ export default {
 
         },
         
-        checkHtml: function(htmlString,att,value) {
+        checkHtml: function(htmlString,tag,att,value) {
 
-            if(value === '' || att === ''){
+            this.isHtml = true;
+
+            if(value === '' || att === '' || tag === ''){
                 return
             }
 
@@ -150,11 +157,11 @@ export default {
             const hrefs = doc.querySelectorAll('['+att +']');
             
             this.exist = false;
-           
+
             
             for(let h of hrefs){
-                console.log(h)
-                if(h[att].includes(value)){
+                  
+                if(h.tagName.toLowerCase() === tag && h[att].includes(value)){
                     this.exist = true;
                     return 1;
                 }
@@ -165,6 +172,9 @@ export default {
         },
         
         checkApi: function(htmlString,att,value2) {
+
+            this.isHtml = false;
+
 
             if(value2 === '' || att === ''){
                 return
