@@ -147,6 +147,8 @@ export default {
         checkHtml: function(htmlString,tag,att,value) {
 
             this.isHtml = true;
+            this.exist = false;
+
 
             if(value === '' || att === '' || tag === ''){
                 return
@@ -156,7 +158,6 @@ export default {
             const doc = parser.parseFromString(htmlString, 'text/html');
             const hrefs = doc.querySelectorAll('['+att +']');
             
-            this.exist = false;
 
             
             for(let h of hrefs){
@@ -173,6 +174,7 @@ export default {
         
         checkApi: function(htmlString,att,value2) {
 
+            this.exist = false;
             this.isHtml = false;
 
 
